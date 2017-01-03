@@ -1,7 +1,6 @@
 package com.example.venetatodorova.colorpicker;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -14,13 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import static android.R.attr.bitmap;
+
 public class MainActivity extends AppCompatActivity {
 
     ColorPickerDialogFragment colorPickerDialogFragment;
-    Paint paint;
-    Bitmap b;
-    Canvas c;
-    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -15,8 +15,6 @@ import android.widget.ImageView;
 
 public class ColorPickerDialogFragment extends DialogFragment {
 
-    ImageView imageView;
-    Bitmap bitmap;
     Button button;
     ColorPickerView colorPickerView;
 
@@ -24,32 +22,26 @@ public class ColorPickerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.color_picker_fragment,container,false);
-
-        bitmap = Bitmap.createBitmap(1530, 1530,  Bitmap.Config.ARGB_8888);
-
-        colorPickerView = (ColorPickerView) v.findViewById(R.id.colorPicker);
-        colorPickerView.setBitmap(bitmap);
-
-        button = (Button) v.findViewById(R.id.fragment_button);
-
-        /*
-        imageView.setOnTouchListener(new View.OnTouchListener() {
+        button = (Button)v.findViewById(R.id.fragment_button);
+        colorPickerView = (ColorPickerView)v.findViewById(R.id.colorPicker);
+        colorPickerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int x = (int) motionEvent.getX();
                 int y = (int) motionEvent.getY();
-                if(x>=0 && y>=0){
-                    int pixel = bitmap.getPixel(x,y);
-                    int red = Color.red(pixel);
-                    int blue = Color.blue(pixel);
-                    int green = Color.green(pixel);
-                    button.setBackgroundColor(Color.rgb(red,green,blue));
+                if(x>=0 && y>=0 && x<colorPickerView.getBitmapWidth() && y<colorPickerView.getBitmapHeight()){
+                    int color = colorPickerView.getColor(x,y);
+                    button.setBackgroundColor(color);
                 }
                 return true;
             }
         });
-        */
-
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         return v;
     }
 
