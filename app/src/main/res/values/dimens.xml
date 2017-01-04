@@ -5,4 +5,8 @@
     <dimen name="padding">6dp</dimen>
     <dimen name="iv_height">400dp</dimen>
     <dimen name="iv_width">400dp</dimen>
+    <dimen name="colorPickerWidth">200dp</dimen>
+    <dimen name="colorPickerHeight">200dp</dimen>
+    <dimen name="sliderViewWidth">200dp</dimen>
+    <dimen name="sliderViewHeight">40dp</dimen>
 </resources>

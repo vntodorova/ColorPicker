@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<resources>
+    <dimen name="colorPickerWidth">500dp</dimen>
+    <dimen name="colorPickerHeight">300dp</dimen>
+    <dimen name="sliderViewWidth">500dp</dimen>
+    <dimen name="sliderViewHeight">50dp</dimen>
+</resources>

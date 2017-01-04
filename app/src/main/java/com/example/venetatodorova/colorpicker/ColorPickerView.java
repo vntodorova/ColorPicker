@@ -16,14 +16,16 @@ public class ColorPickerView extends View {
     private Paint mPaint;
     Bitmap bitmap;
     Canvas myCanvas;
-    int bitmapWidth=600;
-    int bitmapHeight=600;
+    float bitmapWidth,bitmapHeight;
     int color;
-    OnColorPickedListener listener;
+    OnColorPickedListener colorListener;
+    OnScrollListener scrollListener;
 
     interface OnColorPickedListener{
-        void onColorPicked(int color);
-        void onSliderViewColorPicked(int color);
+        void onColorPicked(int color, boolean onColorPicker);
+    }
+
+    interface OnScrollListener{
         void setScrollView(boolean enabled);
     }
 
@@ -32,19 +34,22 @@ public class ColorPickerView extends View {
         init();
     }
 
-    public void setListener(OnColorPickedListener listener) {
-        this.listener = listener;
+    public void setColorListener(OnColorPickedListener listener) {
+        colorListener = listener;
     }
+    public void setScrollListener(OnScrollListener listener) { scrollListener = listener; }
 
     private void init() {
+        bitmapWidth = getResources().getDimension(R.dimen.colorPickerWidth);
+        bitmapHeight = getResources().getDimension(R.dimen.colorPickerHeight);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bitmap = Bitmap.createBitmap(bitmapWidth,bitmapHeight,Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap((int)bitmapWidth,(int)bitmapHeight,Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
     }
 
     private void drawBitmap(){
         int i;
-        int interval = bitmapWidth/6;
+        int interval = (int)bitmapWidth/6;
         for(i = 0; i < interval; i++){
             mPaint.setShader(new LinearGradient(0,0,0,bitmapHeight,Color.rgb(255,i*255/interval,0),Color.WHITE, Shader.TileMode.CLAMP));
             myCanvas.drawLine(i,0,i,bitmapHeight, mPaint);
@@ -94,14 +99,14 @@ public class ColorPickerView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_UP){
-            listener.setScrollView(true);
+            scrollListener.setScrollView(true);
         } else {
-            listener.setScrollView(false);
+            scrollListener.setScrollView(false);
             int x = (int) event.getX();
             int y = (int) event.getY();
             if(x>=0 && y>=0 && x<bitmapWidth && y<bitmapHeight) {
                 color = getColor(x, y);
-                listener.onColorPicked(color);
+                colorListener.onColorPicked(color,true);
             }
         }
         return true;

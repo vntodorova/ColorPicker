@@ -16,18 +16,22 @@ public class SliderView extends View{
     private Paint mPaint;
     Bitmap bitmap;
     Canvas myCanvas;
-    int bitmapWidth=600;
-    int bitmapHeight=100;
+    float bitmapWidth,bitmapHeight;
     int color;
-    ColorPickerView.OnColorPickedListener listener;
+    ColorPickerView.OnColorPickedListener colorListener;
+    ColorPickerView.OnScrollListener scrollListener;
 
     public SliderView(Context context,AttributeSet attrs) {
         super(context,attrs);
         init();
     }
 
-    public void setListener(ColorPickerView.OnColorPickedListener listener){
-        this.listener = listener;
+    public void setColorListener(ColorPickerView.OnColorPickedListener colorListener){
+        this.colorListener = colorListener;
+    }
+
+    public void setScrollListener(ColorPickerView.OnScrollListener scrollListener) {
+        this.scrollListener = scrollListener;
     }
 
     public void setColor(int color){
@@ -35,8 +39,10 @@ public class SliderView extends View{
     }
 
     private void init() {
+        bitmapWidth = getResources().getDimension(R.dimen.sliderViewWidth);
+        bitmapHeight = getResources().getDimension(R.dimen.sliderViewHeight);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bitmap = Bitmap.createBitmap(bitmapWidth,bitmapHeight,Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap((int)bitmapWidth,(int)bitmapHeight,Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
 
     }
@@ -76,15 +82,15 @@ public class SliderView extends View{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_UP){
-            listener.setScrollView(true);
+            scrollListener.setScrollView(true);
             return super.onTouchEvent(event);
         }
-        listener.setScrollView(false);
+        scrollListener.setScrollView(false);
         int x = (int) event.getX();
         int y = (int) event.getY();
         if(x>=0 && y>=0 && x<bitmapWidth && y<bitmapHeight){
             color = getColor(x,y);
-            listener.onSliderViewColorPicked(color);
+            colorListener.onColorPicked(color,false);
         }
         return true;
     }

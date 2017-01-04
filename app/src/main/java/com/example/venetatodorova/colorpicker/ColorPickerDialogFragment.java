@@ -1,24 +1,35 @@
 package com.example.venetatodorova.colorpicker;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ColorPickerDialogFragment extends DialogFragment implements ColorPickerView.OnColorPickedListener{
+public class ColorPickerDialogFragment
+        extends DialogFragment
+        implements ColorPickerView.OnColorPickedListener, ColorPickerView.OnScrollListener{
 
     ColorPickerView colorPickerView;
     SliderView sliderView;
     TextView textView;
     MyScrollView scrollView;
     int color;
+    ColorPickerView.OnColorPickedListener listener;
 
     public static ColorPickerDialogFragment newInstance() {
         return new ColorPickerDialogFragment();
+    }
+
+    public void setListener(ColorPickerView.OnColorPickedListener listener) {
+        this.listener = listener;
     }
 
     @Nullable
@@ -30,17 +41,21 @@ public class ColorPickerDialogFragment extends DialogFragment implements ColorPi
         sliderView = (SliderView)v.findViewById(R.id.sliderView);
         textView = (TextView)v.findViewById(R.id.text);
         scrollView = (MyScrollView) v.findViewById(R.id.scrollView);
-        sliderView.setListener(this);
-        colorPickerView.setListener(this);
+        sliderView.setColorListener(this);
+        sliderView.setScrollListener(this);
+        colorPickerView.setColorListener(this);
+        colorPickerView.setScrollListener(this);
 
         if(savedInstanceState!=null){
+            setScrollView(true);
             color = savedInstanceState.getInt("Color");
-            onColorPicked(color);
+            onColorPicked(color,true);
         }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onColorPicked(color,false);
                 dismiss();
             }
         });
@@ -54,23 +69,22 @@ public class ColorPickerDialogFragment extends DialogFragment implements ColorPi
     }
 
     @Override
-    public void onColorPicked(int color) {
+    public void onColorPicked(int color,boolean onColorPicker) {
         this.color = color;
+        int red = Color.red(color);
+        int blue = Color.blue(color);
+        int green = Color.green(color);
         textView.setBackgroundColor(color);
         textView.setText(String.format("#%06X", (0xFFFFFF & color)));
-        sliderView.setColor(color);
-        sliderView.invalidate();
+        if ((red*0.299 + green*0.587 + blue*0.114) > 186) textView.setTextColor(Color.BLACK);
+        else textView.setTextColor(Color.WHITE);
+        if(onColorPicker){
+            sliderView.setColor(color);
+            sliderView.invalidate();
+        }
     }
-
-    @Override
-     public void onSliderViewColorPicked(int color) {
-        this.color = color;
-        textView.setBackgroundColor(color);
-        textView.setText(String.format("#%06X", (0xFFFFFF & color)));
-     }
 
     public void setScrollView(boolean enabled) {
         scrollView.setScrollingEnabled(enabled);
     }
-
 }
