@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import static android.R.attr.bitmap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     ColorPickerDialogFragment colorPickerDialogFragment;
 

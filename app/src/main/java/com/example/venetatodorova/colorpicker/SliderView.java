@@ -8,6 +8,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class SliderView extends View{
@@ -18,22 +19,19 @@ public class SliderView extends View{
     int bitmapWidth=600;
     int bitmapHeight=100;
     int color;
+    ColorPickerView.OnColorPickedListener listener;
 
     public SliderView(Context context,AttributeSet attrs) {
         super(context,attrs);
         init();
     }
 
+    public void setListener(ColorPickerView.OnColorPickedListener listener){
+        this.listener = listener;
+    }
+
     public void setColor(int color){
         this.color=color;
-    }
-
-    public int getBitmapWidth(){
-        return bitmap.getWidth();
-    }
-
-    public int getBitmapHeight(){
-        return bitmap.getHeight();
     }
 
     private void init() {
@@ -74,4 +72,21 @@ public class SliderView extends View{
         mPaint.setStyle( Paint.Style.STROKE );
         canvas.drawRect(0, 0, bitmapWidth, bitmapHeight, mPaint);
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_UP){
+            listener.setScrollView(true);
+            return super.onTouchEvent(event);
+        }
+        listener.setScrollView(false);
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        if(x>=0 && y>=0 && x<bitmapWidth && y<bitmapHeight){
+            color = getColor(x,y);
+            listener.onSliderViewColorPicked(color);
+        }
+        return true;
+    }
+
 }

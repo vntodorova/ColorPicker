@@ -6,9 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ColorPickerView extends View {
@@ -18,18 +18,22 @@ public class ColorPickerView extends View {
     Canvas myCanvas;
     int bitmapWidth=600;
     int bitmapHeight=600;
+    int color;
+    OnColorPickedListener listener;
+
+    interface OnColorPickedListener{
+        void onColorPicked(int color);
+        void onSliderViewColorPicked(int color);
+        void setScrollView(boolean enabled);
+    }
 
     public ColorPickerView(Context context, AttributeSet attrs) {
         super(context,attrs);
         init();
     }
 
-    public int getBitmapWidth(){
-        return bitmap.getWidth();
-    }
-
-    public int getBitmapHeight(){
-        return bitmap.getHeight();
+    public void setListener(OnColorPickedListener listener) {
+        this.listener = listener;
     }
 
     private void init() {
@@ -72,7 +76,6 @@ public class ColorPickerView extends View {
         int red = Color.red(pixel);
         int blue = Color.blue(pixel);
         int green = Color.green(pixel);
-
         return Color.rgb(red,green,blue);
     }
 
@@ -86,5 +89,21 @@ public class ColorPickerView extends View {
         mPaint.setStrokeWidth( 10f );
         mPaint.setStyle( Paint.Style.STROKE );
         canvas.drawRect(0, 0, bitmapWidth, bitmapHeight, mPaint);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_UP){
+            listener.setScrollView(true);
+        } else {
+            listener.setScrollView(false);
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            if(x>=0 && y>=0 && x<bitmapWidth && y<bitmapHeight) {
+                color = getColor(x, y);
+                listener.onColorPicked(color);
+            }
+        }
+        return true;
     }
 }
