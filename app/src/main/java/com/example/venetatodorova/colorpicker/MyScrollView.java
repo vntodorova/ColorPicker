@@ -12,7 +12,7 @@ public class MyScrollView extends ScrollView {
         super(context, attrs);
     }
 
-    public void setScrollingEnabled(boolean enabled){
+    public void setScrollingEnabled(boolean enabled) {
         isEnabledScrollView = enabled;
     }
 

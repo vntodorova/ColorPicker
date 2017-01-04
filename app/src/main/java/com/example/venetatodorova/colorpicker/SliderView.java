@@ -11,22 +11,22 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class SliderView extends View{
+public class SliderView extends View {
 
-    private Paint mPaint;
+    private Paint paint;
     Bitmap bitmap;
     Canvas myCanvas;
-    float bitmapWidth,bitmapHeight;
+    float bitmapWidth, bitmapHeight;
     int color;
     ColorPickerView.OnColorPickedListener colorListener;
     ColorPickerView.OnScrollListener scrollListener;
 
-    public SliderView(Context context,AttributeSet attrs) {
-        super(context,attrs);
+    public SliderView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         init();
     }
 
-    public void setColorListener(ColorPickerView.OnColorPickedListener colorListener){
+    public void setColorListener(ColorPickerView.OnColorPickedListener colorListener) {
         this.colorListener = colorListener;
     }
 
@@ -34,63 +34,63 @@ public class SliderView extends View{
         this.scrollListener = scrollListener;
     }
 
-    public void setColor(int color){
-        this.color=color;
+    public void setColor(int color) {
+        this.color = color;
     }
 
     private void init() {
         bitmapWidth = getResources().getDimension(R.dimen.sliderViewWidth);
         bitmapHeight = getResources().getDimension(R.dimen.sliderViewHeight);
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bitmap = Bitmap.createBitmap((int)bitmapWidth,(int)bitmapHeight,Bitmap.Config.ARGB_8888);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        bitmap = Bitmap.createBitmap((int) bitmapWidth, (int) bitmapHeight, Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
 
     }
 
-    private void drawBitmap(){
+    private void drawBitmap() {
         int i;
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);
 
-        for(i = 0; i < bitmapHeight; i++){
-            mPaint.setShader(new LinearGradient(0,0,bitmapWidth,0, Color.rgb(red,green,blue),Color.BLACK, Shader.TileMode.CLAMP));
-            myCanvas.drawLine(0,i,bitmapWidth,i, mPaint);
+        for (i = 0; i < bitmapHeight; i++) {
+            paint.setShader(new LinearGradient(0, 0, bitmapWidth, 0, Color.rgb(red, green, blue), Color.BLACK, Shader.TileMode.CLAMP));
+            myCanvas.drawLine(0, i, bitmapWidth, i, paint);
         }
     }
 
-    public int getColor(int x,int y) {
-        int pixel = bitmap.getPixel(x,y);
+    public int getColor(int x, int y) {
+        int pixel = bitmap.getPixel(x, y);
         int red = Color.red(pixel);
         int blue = Color.blue(pixel);
         int green = Color.green(pixel);
-        return Color.rgb(red,green,blue);
+        return Color.rgb(red, green, blue);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBitmap();
-        canvas.drawBitmap(bitmap,0,0,null);
-        mPaint.setShader(null);
-        mPaint.setColor( Color.GRAY );
-        mPaint.setStrokeWidth( 10f );
-        mPaint.setStyle( Paint.Style.STROKE );
-        canvas.drawRect(0, 0, bitmapWidth, bitmapHeight, mPaint);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        paint.setShader(null);
+        paint.setColor(Color.GRAY);
+        paint.setStrokeWidth(10f);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(0, 0, bitmapWidth, bitmapHeight, paint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_UP){
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             scrollListener.setScrollView(true);
             return super.onTouchEvent(event);
         }
         scrollListener.setScrollView(false);
         int x = (int) event.getX();
         int y = (int) event.getY();
-        if(x>=0 && y>=0 && x<bitmapWidth && y<bitmapHeight){
-            color = getColor(x,y);
-            colorListener.onColorPicked(color,false);
+        if (x >= 0 && y >= 0 && x < bitmapWidth && y < bitmapHeight) {
+            color = getColor(x, y);
+            colorListener.onColorPicked(color, false);
         }
         return true;
     }
